@@ -1,12 +1,9 @@
+const inputElement = document.getElementById('nameInput');
+const startButton = document.getElementById('startButton');
+const mainContainer = document.querySelector('.container');
+const gameContainer = document.querySelector('#gameContainer');
 
-
-
-const inputElement = document.querySelector('.name');
-const submitElement = document.querySelector('.sub');
-const mainContainer = document.querySelector('.container')
-const gameContainer = document.querySelector('#gameContainer')
-
-// Constants
+let currentBank = 0;
 let userName = '';
 let gameArr = [];
 const NUM_DAYS = 30;
@@ -28,20 +25,12 @@ const BASE_DAILY_EARNINGS = {
   C: 1500, // Base daily earnings for option C
 };
 
-
-
-submitElement.addEventListener('click',()=>{
-    userName = inputElement.value
-    console.log(userName);
+// Event listener for the start button
+startButton.addEventListener('click', () => {
+    userName = inputElement.value;
     clearElement(gameContainer);
     introScreen();
 });
-
-
-
-
-
-
 
 const clearElement = (element) => {
     while(element.firstChild){
@@ -49,79 +38,93 @@ const clearElement = (element) => {
     }
 }
 
-
 const introScreen = () => {
-
-    const mainDiv = document.createElement('div')
-
+    // Create elements for the intro screen
+    const mainDiv = document.createElement('div');
     const introDivElement = document.createElement('div');
     const continueButton = document.createElement('button');
 
-    continueButton.textContent = 'Continue...';
-
+    // Set text content for elements
     introDivElement.textContent = `So your name is ${userName} huh?
     Well ${userName}, here's the jazz. Its been a bad winter and has been snowing all year! We need you to get this place up and running in 30 DAYS!
     I'll need you to use your cunning and wit to manage us out of this pickle. You can buy some upgrades as needed but we're dirt broke right now and alls we got is this here shovel.
     Anywho! Your goal is to get us a big ol' truck and some new building upgrades but its gonna run us $100000!
     Well.. I'm off to Florida with the wife. See ya in a month!`;
+    continueButton.textContent = 'Continue...';
 
-    
+    // Append elements to the main container
     mainContainer.appendChild(mainDiv);
     mainDiv.appendChild(introDivElement);
     mainDiv.appendChild(continueButton);
 
-    continueButton.addEventListener('click',()=>{
+    // Event listener for the continue button
+    continueButton.addEventListener('click', () => {
         clearElement(mainDiv);
         startGame();
-    });
-    
+    });   
 }
 
 const startGame = () => {
-
-    const mainDiv = document.createElement('div')
-
-    const questionParagraph = document.createElement('div')
+    // Create elements for the game screen
+    const mainDiv = document.createElement('div');
+    const questionParagraph = document.createElement('div');
     const workButton = document.createElement('button');
     const relaxButton = document.createElement('button');
     const upgradeButton = document.createElement('button');
     const quitButton = document.createElement('button');
+    const statementDiv = document.createElement('p');
+    let day = 1;
 
-    workButton.textContent = 'work';
-    relaxButton.textContent = 'relax';
-    upgradeButton.textContent = 'upgrade';
-    quitButton.textContent = 'quit';
+    // Set text content for elements
+    workButton.textContent = 'Work';
+    relaxButton.textContent = 'Relax';
+    upgradeButton.textContent = 'Upgrade';
+    quitButton.textContent = 'Quit';
+    statementDiv.textContent = `Day ${day}: Do you want to shovel houses today? You currently have $0`;
 
+    // Event listeners for game actions
+    workButton.addEventListener('click', () => {
+        handleWork(day);
+    });
 
-    mainContainer.appendChild(mainDiv);
+    relaxButton.addEventListener('click', () => {
+        handleRelax(day);
+    });
 
+    upgradeButton.addEventListener('click', () => {
+        handleUpgrade(day);
+    });
+
+    quitButton.addEventListener('click', () => {
+        handleQuit();
+    });
+
+    // Append elements to the main container
+    gameContainer.appendChild(statementDiv);
+    gameContainer.appendChild(mainDiv);
     mainDiv.appendChild(workButton);
     mainDiv.appendChild(relaxButton);
     mainDiv.appendChild(upgradeButton);
     mainDiv.appendChild(quitButton);
-
-
-    for(let day = 1; day <= NUM_DAYS; day++){
-        const prevDay = day - 1;
-        const dailyEarnings = handleMission(day, upgradeLevels, currentMoney);
-        currentMoney = dailyEarnings;
-    }
-
-
-
-
 }
 
+const handleWork = (day) => {
+    // Logic for handling work action
+}
 
+const handleRelax = (day) => {
+    // Logic for handling relax action
+}
 
+const handleUpgrade = (day) => {
+    // Logic for handling upgrade action
+}
 
+const handleQuit = () => {
+    // Logic for handling quit action
+}
 
-
-
-
-
-
-
-
-
-
+// Function to generate random daily earnings based on level
+function generateRandomEarnings(level, upgradeLevels) {
+    // Logic for generating random earnings
+}
