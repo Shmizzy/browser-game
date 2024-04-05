@@ -1,11 +1,9 @@
-const inputElement = document.getElementById('nameInput');
-const startButton = document.getElementById('startButton');
+const inputElement = document.querySelector('.name');
+const startButton = document.querySelector('.sub');
 const mainContainer = document.querySelector('.container');
 const gameContainer = document.querySelector('#gameContainer');
 
-let currentBank = 0;
 let userName = '';
-let gameArr = [];
 const NUM_DAYS = 30;
 const MIN_DAILY_EARNINGS = 100;
 const MAX_DAILY_EARNINGS = 600;
@@ -23,7 +21,21 @@ const UPGRADE_MULTIPLIERS = {
 const BASE_DAILY_EARNINGS = {
   B: 1000, // Base daily earnings for option B
   C: 1500, // Base daily earnings for option C
-};
+};const upgradeLevels = {
+    A: 1,
+    B: 1,
+    C: 1,
+  };
+
+  let playerObject = {
+    playerName: userName,
+    bankBalance: currentBank = 0,
+    currentDay: day = 1,
+
+}
+
+
+
 
 // Event listener for the start button
 startButton.addEventListener('click', () => {
@@ -67,24 +79,28 @@ const introScreen = () => {
 const startGame = () => {
     // Create elements for the game screen
     const mainDiv = document.createElement('div');
-    const questionParagraph = document.createElement('div');
     const workButton = document.createElement('button');
     const relaxButton = document.createElement('button');
     const upgradeButton = document.createElement('button');
     const quitButton = document.createElement('button');
     const statementDiv = document.createElement('p');
-    let day = 1;
+    
 
     // Set text content for elements
     workButton.textContent = 'Work';
     relaxButton.textContent = 'Relax';
     upgradeButton.textContent = 'Upgrade';
     quitButton.textContent = 'Quit';
-    statementDiv.textContent = `Day ${day}: Do you want to shovel houses today? You currently have $0`;
+
+
+
+    statementDiv.textContent = `Day ${playerObject['currentDay']}: Do you want to shovel houses today? You currently have $${playerObject['bankBalance']}`;
 
     // Event listeners for game actions
     workButton.addEventListener('click', () => {
-        handleWork(day);
+        handleWork();
+        clearElement(statementDiv);
+        clearElement(mainDiv);
     });
 
     relaxButton.addEventListener('click', () => {
@@ -108,8 +124,34 @@ const startGame = () => {
     mainDiv.appendChild(quitButton);
 }
 
-const handleWork = (day) => {
-    // Logic for handling work action
+const handleWork = () => {
+    const workDiv = document.createElement('div');
+    const textDiv = document.createElement('div');
+    const continueButton = document.createElement('button');
+    playerObject['currentDay']++;
+    
+    
+
+    const dailyEarning =  generateRandomEarnings(upgradeLevels,currentBank);
+    continueButton.textContent = 'CONTINUE';
+    workDiv.textContent = `You chose to shovel houses today! \n Current Amount: ${currentBank} \n  You earned ${dailyEarning} today \n Total Amount Earned so far: $${dailyEarning + currentBank}`
+    gameContainer.appendChild(workDiv);
+
+    workDiv.appendChild(textDiv);
+    workDiv.appendChild(continueButton);
+
+    continueButton.addEventListener('click', () => {
+        if(playerObject['currentDay'] <= NUM_DAYS){
+            clearElement(workDiv);
+            startGame();
+        }else {
+            
+        }
+
+    });
+    
+   
+
 }
 
 const handleRelax = (day) => {
@@ -124,7 +166,53 @@ const handleQuit = () => {
     // Logic for handling quit action
 }
 
-// Function to generate random daily earnings based on level
-function generateRandomEarnings(level, upgradeLevels) {
-    // Logic for generating random earnings
+const generateRandomEarnings = (level, upgradeLevels) => {
+    let minEarnings, maxEarnings, earnings, multiplier;
+
+    switch (level) {
+        case 1:
+            minEarnings = MIN_DAILY_EARNINGS;
+            maxEarnings = MAX_DAILY_EARNINGS;
+            break;
+        case 2:
+            minEarnings = BASE_DAILY_EARNINGS["B"] + (upgradeLevels["B"] - 1) * 250;
+            maxEarnings = 1250 + (upgradeLevels["B"] - 1) * 250;
+            break;
+        case 3:
+            minEarnings = BASE_DAILY_EARNINGS["C"] + (upgradeLevels["C"] - 1) * 500;
+            maxEarnings = 2000 + (upgradeLevels["C"] - 1) * 500;
+            break;
+        case 4:
+            minEarnings = 1200;
+            maxEarnings = 2000;
+            break;
+        default:
+            minEarnings = 0;
+            maxEarnings = 0;
+    }
+
+    earnings = Math.floor(Math.random() * (maxEarnings - minEarnings + 1)) + minEarnings;
+    
+    switch (level) {
+        case 1:
+            multiplier = UPGRADE_MULTIPLIERS["A"][upgradeLevels["A"] - 1];
+            break;
+        case 2:
+            multiplier = UPGRADE_MULTIPLIERS["B"][upgradeLevels["B"] - 1];
+            break;
+        case 3:
+            multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
+            break;
+        case 4:
+            multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
+            break;
+        default:
+            multiplier = 1;
+    }
+
+    return Math.floor(earnings * multiplier);
+}
+
+const endGame = () => {
+    // End game logic here
 }
