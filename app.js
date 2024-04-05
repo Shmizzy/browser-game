@@ -3,7 +3,9 @@ const startButton = document.querySelector('.sub');
 const mainContainer = document.querySelector('.container');
 const gameContainer = document.querySelector('#gameContainer');
 
+let earnings = 0;
 let userName = '';
+let earnedSum = 0;
 const NUM_DAYS = 30;
 const MIN_DAILY_EARNINGS = 100;
 const MAX_DAILY_EARNINGS = 600;
@@ -21,7 +23,8 @@ const UPGRADE_MULTIPLIERS = {
 const BASE_DAILY_EARNINGS = {
   B: 1000, // Base daily earnings for option B
   C: 1500, // Base daily earnings for option C
-};const upgradeLevels = {
+};
+const upgradeLevels = {
     A: 1,
     B: 1,
     C: 1,
@@ -31,6 +34,7 @@ const BASE_DAILY_EARNINGS = {
     playerName: userName,
     bankBalance: currentBank = 0,
     currentDay: day = 1,
+    playerLevel:  1,
 
 }
 
@@ -132,9 +136,9 @@ const handleWork = () => {
     
     
 
-    const dailyEarning =  generateRandomEarnings(upgradeLevels,currentBank);
+    const dailyEarning =  generateRandomEarnings(playerObject['playerLevel'],currentBank, upgradeLevels);
     continueButton.textContent = 'CONTINUE';
-    workDiv.textContent = `You chose to shovel houses today! \n Current Amount: ${currentBank} \n  You earned ${dailyEarning} today \n Total Amount Earned so far: $${dailyEarning + currentBank}`
+    workDiv.textContent = `You chose to shovel houses today! \n Current Amount: $${playerObject['bankBalance']} \n  You earned $${earnings} today \n Total Amount Earned so far: $${earnedSum}`
     gameContainer.appendChild(workDiv);
 
     workDiv.appendChild(textDiv);
@@ -145,7 +149,7 @@ const handleWork = () => {
             clearElement(workDiv);
             startGame();
         }else {
-            
+
         }
 
     });
@@ -166,8 +170,9 @@ const handleQuit = () => {
     // Logic for handling quit action
 }
 
+
 const generateRandomEarnings = (level, upgradeLevels) => {
-    let minEarnings, maxEarnings, earnings, multiplier;
+    let minEarnings, maxEarnings,  multiplier = 0;
 
     switch (level) {
         case 1:
@@ -192,25 +197,30 @@ const generateRandomEarnings = (level, upgradeLevels) => {
     }
 
     earnings = Math.floor(Math.random() * (maxEarnings - minEarnings + 1)) + minEarnings;
+    console.log(earnings);
     
-    switch (level) {
-        case 1:
-            multiplier = UPGRADE_MULTIPLIERS["A"][upgradeLevels["A"] - 1];
-            break;
-        case 2:
-            multiplier = UPGRADE_MULTIPLIERS["B"][upgradeLevels["B"] - 1];
-            break;
-        case 3:
-            multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
-            break;
-        case 4:
-            multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
-            break;
-        default:
-            multiplier = 1;
-    }
+    // switch (level) {
+    //     case 1:
+    //         multiplier = UPGRADE_MULTIPLIERS["A"][upgradeLevels["A"] - 1];
+    //         break;
+    //     case 2:
+    //         multiplier = UPGRADE_MULTIPLIERS["B"][upgradeLevels["B"] - 1];
+    //         break;
+    //     case 3:
+    //         multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
+    //         break;
+    //     case 4:
+    //         multiplier = UPGRADE_MULTIPLIERS["C"][upgradeLevels["C"] - 1];
+    //         break;
+    //     default:
+    //         multiplier = 1;
+    // }
 
-    return Math.floor(earnings * multiplier);
+    let sum = Math.floor(earnings);
+    earnedSum += sum;
+    playerObject['bankBalance'] += sum;
+
+    console.log(multiplier);
 }
 
 const endGame = () => {
